@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
@@ -38,8 +39,8 @@ public class EmployeeController {
     /**
      * 登录
      *
-     * @param employeeLoginDTO
-     * @return
+     * @param employeeLoginDTO 登录请求数据传输对象，包含用户名和密码
+     * @return 统一响应结果，包含登录成功后的员工信息及 JWT 令牌
      */
     @PostMapping("/login")
     @ApiOperation(value = "员工登录", notes = "使用用户名和密码登录, 成功返回token")
@@ -48,14 +49,17 @@ public class EmployeeController {
 
         Employee employee = employeeService.login(employeeLoginDTO);
 
-        //登录成功后，生成jwt令牌
+        // 登录成功后，构建 JWT 令牌的负载（claims），将员工ID放入其中
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaimsConstant.EMP_ID, employee.getId());
+
+        // 调用 JwtUtil 工具类生成 JWT 字符串
         String token = JwtUtil.createJWT(
                 jwtProperties.getAdminSecretKey(),
                 jwtProperties.getAdminTtl(),
                 claims);
 
+        // 构建返回给前端的视图对象，包含员工ID、用户名、姓名和生成的令牌
         EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
                 .id(employee.getId())
                 .userName(employee.getUsername())
@@ -69,11 +73,25 @@ public class EmployeeController {
     /**
      * 退出
      *
-     * @return
+     * @return 统一响应结果，返回成功信息（无具体数据）
      */
     @PostMapping("/logout")
     @ApiOperation(value = "员工退出")
     public Result<String> logout() {
+        return Result.success();
+    }
+
+    /**
+     * 新增员工
+     * @param employeeDTO 员工信息传输对象
+     * @return 统一响应结果
+     */
+    @PostMapping    // 表示这是一个POST请求
+    @ApiOperation("新增员工")
+    public Result<Void> save(@RequestBody EmployeeDTO employeeDTO) {
+        // @RequestBody 表示将前端传的JSON自动转为EmployeeDTO对象
+        log.info("新增员工: {}", employeeDTO);
+        employeeService.save(employeeDTO);  // 调用 Service 层方法
         return Result.success();
     }
 
