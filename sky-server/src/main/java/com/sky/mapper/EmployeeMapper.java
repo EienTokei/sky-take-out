@@ -61,4 +61,14 @@ public interface EmployeeMapper {
      * @return 数据库受影响的行数，通常为 1（更新成功）或 0（未找到对应 id 的记录）
      */
     int update(Employee employee);
+
+    /**
+     * 根据 ID 查询员工
+     * @param id 员工ID
+     * @return 员工实体
+     */
+    @Select("select * from employee where id = #{id}")
+    Employee getById(Long id);
+
+
 }

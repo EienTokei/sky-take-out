@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.constant.MessageConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
@@ -115,20 +116,46 @@ public class EmployeeController {
      * @param id 员工ID，不能为空
      * @return 统一响应结果对象
      */
-    @PostMapping("status/{status}")
+    @PostMapping("/status/{status}")
     @ApiOperation("启用/禁用员工账号")
     // Controller 层的参数建议使用包装类，特别是对于非必须的、需要校验的参数。这是 Spring 开发中的常见实践
     public Result<Void> updateStatus(@PathVariable("status") Integer status, Long id) {
         log.info("启用/禁用员工账号: {}, 状态: {}", id, status);
         // 基础校验
         if (status == null || (status != 0 && status != 1)) {
-            throw new BaseException("状态参数错误");
+            throw new BaseException(MessageConstant.STATUS_PARAM_ERROR);
         }
         if (id == null) {
-            throw new BaseException("员工ID不能为空");
+            throw new BaseException(MessageConstant.EMPLOYEE_ID_EMPTY);
         }
 
         employeeService.updateStatus(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 根据ID查询员工信息
+     * @param id 员工ID
+     * @return 统一响应结果
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据ID查询员工")
+    public Result<Employee> getById(@PathVariable Long id) {
+        log.info("员工信息查询, ID: {}", id);
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * 编辑员工信息
+     * @param employeeDTO 员工信息传输对象
+     * @return 统一响应结果
+     */
+    @PutMapping
+    @ApiOperation("编辑员工信息")
+    public Result<Void> update(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("编辑员工信息, 内容: {}", employeeDTO);
+        employeeService.update(employeeDTO);
         return Result.success();
     }
 }

@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
@@ -74,13 +75,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void save(EmployeeDTO employeeDTO) {
         Employee employeeByUsername = employeeMapper.getByUsername(employeeDTO.getUsername());
         if (employeeByUsername != null) {
-            throw new EmployeeAlreadyExistsException("用户名已存在");
+            throw new EmployeeAlreadyExistsException(MessageConstant.EMPLOYEE_ALREADY_EXISTS);
         }
 
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);    // Spring 提供的工具，将同名属性复制过去
 
-        employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
         employee.setStatus(StatusConstant.ENABLE);
         employee.setCreateTime(LocalDateTime.now());
         employee.setUpdateTime(LocalDateTime.now());
@@ -128,14 +129,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 业务校验
         Long currentId = BaseContext.getCurrentId();
         if (currentId == null) {
-            throw new BaseException("未获取到当前登录用户信息");
+            throw new BaseException(MessageConstant.CURRENT_USER_NOT_FOUND);
         }
 
         if (currentId.equals(id) && status == 0) {
-            throw new BaseException("不能禁用当前登录账号");
+            throw new BaseException(MessageConstant.CANNOT_DISABLE_SELF);
         }
         if (id == 1 && status == 0) {
-            throw new BaseException("不能禁用 admin 账号");
+            throw new BaseException(MessageConstant.CANNOT_DISABLE_ADMIN);
         }
 
         Employee employee = Employee.builder()
@@ -147,8 +148,40 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         int rows = employeeMapper.update(employee);
         if (rows == 0) {
-            throw new BaseException("员工不存在");
+            // throw new BaseException("员工不存在");
+            throw new EmployeeNotFoundException(MessageConstant.EMPLOYEE_NOT_FOUND);
         }
+    }
+
+    /**
+     * 根据ID查询员工
+     * @param id 员工ID
+     * @return 员工实体
+     */
+    @Override
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.getById(id);
+        if (employee == null) {
+            //throw new BaseException("员工不存在");
+            throw new EmployeeNotFoundException(MessageConstant.EMPLOYEE_NOT_FOUND);
+        }
+        employee.setPassword("****");
+        return employee;
+    }
+
+    /**
+     * 更新员工信息
+     * @param employeeDTO 员工信息传输对象
+     */
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.update(employee);
     }
 
 }
