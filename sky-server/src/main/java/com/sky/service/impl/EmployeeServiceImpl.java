@@ -72,7 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param employeeDTO 员工信息传输对象
      */
     @Override
-    public void save(EmployeeDTO employeeDTO) {
+    public void add(EmployeeDTO employeeDTO) {
         Employee employeeByUsername = employeeMapper.getByUsername(employeeDTO.getUsername());
         if (employeeByUsername != null) {
             throw new EmployeeAlreadyExistsException(MessageConstant.EMPLOYEE_ALREADY_EXISTS);

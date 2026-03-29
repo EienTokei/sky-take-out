@@ -89,10 +89,10 @@ public class EmployeeController {
      */
     @PostMapping    // 表示这是一个POST请求
     @ApiOperation("新增员工")
-    public Result<Void> save(@RequestBody EmployeeDTO employeeDTO) {
+    public Result<Void> add(@RequestBody EmployeeDTO employeeDTO) {
         // @RequestBody 表示将前端传的JSON自动转为EmployeeDTO对象
         log.info("新增员工: {}", employeeDTO);
-        employeeService.save(employeeDTO);  // 调用 Service 层方法
+        employeeService.add(employeeDTO);  // 调用 Service 层方法
         return Result.success();
     }
 

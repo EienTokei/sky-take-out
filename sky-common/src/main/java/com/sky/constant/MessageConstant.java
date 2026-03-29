@@ -32,4 +32,5 @@ public class MessageConstant {
     public static final String CANNOT_DISABLE_ADMIN = "不能禁用 admin 账号";
     public static final String EMPLOYEE_NOT_FOUND = "员工不存在";
 
+    public static final String CATEGORY_ALREADY_EXISTS = "分类已存在";
 }
