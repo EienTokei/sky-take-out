@@ -18,15 +18,18 @@ import java.time.format.DateTimeFormatter;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 /**
- * 对象映射器:基于jackson将Java对象转为json，或者将json转为Java对象
- * 将JSON解析为Java对象的过程称为 [从JSON反序列化Java对象]
+ * 对象映射器:基于jackson将Java对象转为json，或者将json转为Java对象<br>
+ * 将JSON解析为Java对象的过程称为 [从JSON反序列化Java对象]<br>
  * 从Java对象生成JSON的过程称为 [序列化Java对象到JSON]
  */
 public class JacksonObjectMapper extends ObjectMapper {
 
+    // 默认日期格式：yyyy-MM-dd（用于 LocalDate）
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+    // 默认日期时间格式：yyyy-MM-dd HH:mm（用于 LocalDateTime）
     //public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+    // 默认时间格式：HH:mm:ss（用于 LocalTime）
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
     public JacksonObjectMapper() {
@@ -35,6 +38,7 @@ public class JacksonObjectMapper extends ObjectMapper {
         this.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         //反序列化时，属性不存在的兼容处理
+        // getDeserializationConfig() 获取反序列化配置，withoutFeatures() 移除该特性
         this.getDeserializationConfig().withoutFeatures(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         SimpleModule simpleModule = new SimpleModule()

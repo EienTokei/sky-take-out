@@ -1,10 +1,13 @@
 package com.sky.mapper;
 
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * 员工数据访问层接口
@@ -43,4 +46,12 @@ public interface EmployeeMapper {
       MyBatis 获取该主键值，通过反射或 setter 方法，将主键值设置到 employee 对象的 id 属性上。
       方法执行完毕后，employee.getId() 就是刚刚生成的主键值。
     */
+
+
+    /**
+     * 员工分页查询
+     * @param employeePageQueryDTO 员工分页查询数据传输对象
+     * @return 符合条件的员工列表
+     */
+    List<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 }

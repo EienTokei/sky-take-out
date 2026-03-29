@@ -12,6 +12,11 @@ spring:
       url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
+  # 日期格式化(Spring Boot 默认使用自动配置的 ObjectMapper，
+  # 但如果你在项目中显式定义了一个 ObjectMapper 并将其注册到 SpringMVC 的消息转换器中，它就会取代默认的配置)
+#  jackson:
+#    date-format: yyyy-MM-dd HH:mm:ss  # 全局日期格式
+#    time-zone: GMT+8                  # 时区，确保时间正确
 
 mybatis:
   #mapper配置文件

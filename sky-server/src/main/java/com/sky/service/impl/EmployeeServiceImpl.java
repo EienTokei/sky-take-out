@@ -1,16 +1,20 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.EmployeeAlreadyExistsException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -87,6 +92,29 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee);
+    }
+
+    /**
+     * 员工分页查询
+     * <p>
+     * 使用PageHelper分页插件自动拦截后续的查询语句，实现物理分页。
+     * 根据DTO中的分页参数（page、pageSize）和可选条件（如姓名等）查询员工列表，
+     * 并封装成包含总记录数和当前页数据的分页结果对象。
+     * </p>
+     * @param employeePageQueryDTO 员工分页查询数据传输对象
+     * @return 分页结果对象
+     */
+    @Override
+    public PageResult<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
+        // 启动分页：通过PageHelper设置当前页码和每页大小
+        // 该方法通过线程变量（ThreadLocal）存储分页信息，使得后续执行的第一个 MyBatis 查询语句会被自动追加 LIMIT 子句实现物理分页。
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+
+        // 此时PageHelper会拦截该查询，自动追加LIMIT子句
+        List<Employee> employeeList = employeeMapper.pageQuery(employeePageQueryDTO);
+        // 使用 PageInfo 包装查询结果
+        PageInfo<Employee> pageInfo = new PageInfo<>(employeeList);
+        return new PageResult<>(pageInfo.getTotal(), pageInfo.getList());
     }
 
 }
