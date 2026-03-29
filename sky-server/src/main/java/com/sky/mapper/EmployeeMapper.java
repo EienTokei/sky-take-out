@@ -54,4 +54,11 @@ public interface EmployeeMapper {
      * @return 符合条件的员工列表
      */
     List<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    /**
+     * 动态更新员工信息
+     * @param employee 包含主键 id 和需要更新的非空字段的员工对象
+     * @return 数据库受影响的行数，通常为 1（更新成功）或 0（未找到对应 id 的记录）
+     */
+    int update(Employee employee);
 }

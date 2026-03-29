@@ -5,6 +5,7 @@ import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
+import com.sky.exception.BaseException;
 import com.sky.properties.JwtProperties;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
@@ -106,5 +107,28 @@ public class EmployeeController {
 
         PageResult<Employee> pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     *
+     * @param status 状态值，0表示禁用，1表示启用
+     * @param id 员工ID，不能为空
+     * @return 统一响应结果对象
+     */
+    @PostMapping("status/{status}")
+    @ApiOperation("启用/禁用员工账号")
+    // Controller 层的参数建议使用包装类，特别是对于非必须的、需要校验的参数。这是 Spring 开发中的常见实践
+    public Result<Void> updateStatus(@PathVariable("status") Integer status, Long id) {
+        log.info("启用/禁用员工账号: {}, 状态: {}", id, status);
+        // 基础校验
+        if (status == null || (status != 0 && status != 1)) {
+            throw new BaseException("状态参数错误");
+        }
+        if (id == null) {
+            throw new BaseException("员工ID不能为空");
+        }
+
+        employeeService.updateStatus(status, id);
+        return Result.success();
     }
 }

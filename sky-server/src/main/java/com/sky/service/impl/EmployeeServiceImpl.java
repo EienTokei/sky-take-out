@@ -9,16 +9,14 @@ import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
-import com.sky.exception.AccountLockedException;
-import com.sky.exception.AccountNotFoundException;
-import com.sky.exception.EmployeeAlreadyExistsException;
-import com.sky.exception.PasswordErrorException;
+import com.sky.exception.*;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
@@ -115,6 +113,42 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 使用 PageInfo 包装查询结果
         PageInfo<Employee> pageInfo = new PageInfo<>(employeeList);
         return new PageResult<>(pageInfo.getTotal(), pageInfo.getList());
+    }
+
+    /**
+     *
+     * @param status 状态值
+     * @param id 员工ID
+     */
+    @Override
+    @Transactional
+    // 声明该方法需要在 Spring 管理的事务中执行。如果方法执行过程中抛出未捕获的运行时异常，事务将回滚，保证数据库操作的原子性
+    public void updateStatus(Integer status, Long id) {
+
+        // 业务校验
+        Long currentId = BaseContext.getCurrentId();
+        if (currentId == null) {
+            throw new BaseException("未获取到当前登录用户信息");
+        }
+
+        if (currentId.equals(id) && status == 0) {
+            throw new BaseException("不能禁用当前登录账号");
+        }
+        if (id == 1 && status == 0) {
+            throw new BaseException("不能禁用 admin 账号");
+        }
+
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .updateTime(LocalDateTime.now())
+                .updateUser(currentId)
+                .build();
+
+        int rows = employeeMapper.update(employee);
+        if (rows == 0) {
+            throw new BaseException("员工不存在");
+        }
     }
 
 }
