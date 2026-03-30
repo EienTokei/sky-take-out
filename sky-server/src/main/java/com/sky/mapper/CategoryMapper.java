@@ -2,10 +2,7 @@ package com.sky.mapper;
 
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -43,4 +40,11 @@ public interface CategoryMapper {
      * @return 数据库受影响的行数
      */
     int update(Category category);
+
+    /**
+     * 根据ID删除分类
+     * @param id 分类ID
+     */
+    @Delete("delete from category where id = #{id}")
+    void deleteById(Integer id);
 }

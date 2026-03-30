@@ -91,4 +91,17 @@ public class CategoryController {
         categoryService.update(categoryDTO);
         return Result.success();
     }
+
+    /**
+     * 根据ID删除分类
+     * @param id 分类ID
+     * @return 统一响应结果
+     */
+    @DeleteMapping
+    @ApiOperation("根据ID删除分类")
+    public Result<Void> deleteById(Integer id) {
+        log.info("删除分类, ID: {}", id);
+        categoryService.deleteById(id);
+        return Result.success();
+    }
 }

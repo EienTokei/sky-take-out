@@ -31,4 +31,10 @@ public interface CategoryService {
      * @param categoryDTO 分类信息数据传输对象
      */
     void update(CategoryDTO categoryDTO);
+
+    /**
+     * 根据ID删除分类
+     * @param id 分类ID
+     */
+    void deleteById(Integer id);
 }

@@ -10,8 +10,11 @@ import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import com.sky.exception.BaseException;
 import com.sky.exception.CategoryAlreadyExistsException;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.exception.ResourceNotFoundException;
 import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +29,10 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
+    private DishMapper dishMapper;
+    @Autowired
+    private SetmealMapper setmealMapper;
 
     /**
      * 新增分类
@@ -109,5 +116,23 @@ public class CategoryServiceImpl implements CategoryService {
         category.setUpdateUser(BaseContext.getCurrentId());
 
         categoryMapper.update(category);
+    }
+
+    /**
+     * 根据ID删除分类
+     * @param id 分类ID
+     */
+    @Override
+    @Transactional
+    public void deleteById(Integer id) {
+        int dishCount = dishMapper.countByCategoryId(id);
+        if (dishCount > 0) {
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
+        }
+        int setmealCount = setmealMapper.countByCategoryId(id);
+        if (setmealCount > 0) {
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);
+        }
+        categoryMapper.deleteById(id);
     }
 }
