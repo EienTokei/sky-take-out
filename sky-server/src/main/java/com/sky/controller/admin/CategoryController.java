@@ -2,7 +2,6 @@ package com.sky.controller.admin;
 
 import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
-import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
@@ -77,6 +76,19 @@ public class CategoryController {
         }
 
         categoryService.updateStatus(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 修改分类
+     * @param categoryDTO 分类信息数据传输对象
+     * @return 统一响应结果
+     */
+    @PutMapping
+    @ApiOperation("修改分类")
+    public Result<Void> update(@RequestBody CategoryDTO categoryDTO) {
+        log.info("修改分类: {}", categoryDTO);
+        categoryService.update(categoryDTO);
         return Result.success();
     }
 }

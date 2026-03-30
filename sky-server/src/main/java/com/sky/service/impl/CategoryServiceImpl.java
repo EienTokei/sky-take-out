@@ -94,4 +94,20 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ResourceNotFoundException(MessageConstant.RESOURCE_NOT_FOUND);
         }
     }
+
+    /**
+     * 更新分类
+     * @param categoryDTO 分类信息数据传输对象
+     */
+    @Override
+    @Transactional
+    public void update(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryDTO, category);
+
+        category.setUpdateTime(LocalDateTime.now());
+        category.setUpdateUser(BaseContext.getCurrentId());
+
+        categoryMapper.update(category);
+    }
 }
