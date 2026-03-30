@@ -36,4 +36,11 @@ public interface CategoryMapper {
      * @return 符合条件的员工列表
      */
     List<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * 动态更新分类信息
+     * @param category 分类对象
+     * @return 数据库受影响的行数
+     */
+    int update(Category category);
 }

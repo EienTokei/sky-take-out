@@ -1,8 +1,12 @@
 package com.sky.controller.admin;
 
+import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
+import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.exception.BaseException;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.CategoryService;
@@ -51,5 +55,28 @@ public class CategoryController {
         log.info("分类分页查询, 参数: {}", categoryPageQueryDTO);
         PageResult<Category> pageResult = categoryService.pageQuery(categoryPageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 启用、禁用分类
+     * @param status 状态值
+     * @param id 分类ID
+     * @return 统一响应结果对象
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用禁用分类")
+    public Result<Void> updateStatus(@PathVariable Integer status, Long id) {
+        log.info("启用/禁用分类: {}, 状态: {}", id, status);
+        // 基础校验
+        if (status == null || (!status.equals(StatusConstant.DISABLE)
+                && !status.equals(StatusConstant.ENABLE))) {
+            throw new BaseException(MessageConstant.STATUS_PARAM_ERROR);
+        }
+        if (id == null) {
+            throw new BaseException(MessageConstant.ID_EMPTY);
+        }
+
+        categoryService.updateStatus(status, id);
+        return Result.success();
     }
 }

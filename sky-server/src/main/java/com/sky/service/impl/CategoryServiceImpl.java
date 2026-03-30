@@ -8,14 +8,16 @@ import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.exception.BaseException;
 import com.sky.exception.CategoryAlreadyExistsException;
-import com.sky.exception.EmployeeAlreadyExistsException;
+import com.sky.exception.ResourceNotFoundException;
 import com.sky.mapper.CategoryMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,5 +66,32 @@ public class CategoryServiceImpl implements CategoryService {
         PageInfo<Category> pageInfo = new PageInfo<>(categoryList);
 
         return new PageResult<>(pageInfo.getTotal(), pageInfo.getList());
+    }
+
+    /**
+     * 更新分类状态
+     * @param status 状态值
+     * @param id 分类ID
+     */
+    @Override
+    @Transactional
+    public void updateStatus(Integer status, Long id) {
+        // 业务校验
+        Long currentId = BaseContext.getCurrentId();
+        if (currentId == null) {
+            throw new BaseException(MessageConstant.CURRENT_USER_NOT_FOUND);
+        }
+
+        Category category = Category.builder()
+                .status(status)
+                .id(id)
+                .updateTime(LocalDateTime.now())
+                .updateUser(currentId)
+                .build();
+
+        int rows = categoryMapper.update(category);
+        if (rows == 0) {
+            throw new ResourceNotFoundException(MessageConstant.RESOURCE_NOT_FOUND);
+        }
     }
 }

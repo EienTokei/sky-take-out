@@ -72,6 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param employeeDTO 员工信息传输对象
      */
     @Override
+    @Transactional
     public void add(EmployeeDTO employeeDTO) {
         Employee employeeByUsername = employeeMapper.getByUsername(employeeDTO.getUsername());
         if (employeeByUsername != null) {
@@ -149,7 +150,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         int rows = employeeMapper.update(employee);
         if (rows == 0) {
             // throw new BaseException("员工不存在");
-            throw new EmployeeNotFoundException(MessageConstant.EMPLOYEE_NOT_FOUND);
+            throw new ResourceNotFoundException(MessageConstant.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -163,7 +164,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeMapper.getById(id);
         if (employee == null) {
             //throw new BaseException("员工不存在");
-            throw new EmployeeNotFoundException(MessageConstant.EMPLOYEE_NOT_FOUND);
+            throw new ResourceNotFoundException(MessageConstant.RESOURCE_NOT_FOUND);
         }
         employee.setPassword("****");
         return employee;
@@ -174,6 +175,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param employeeDTO 员工信息传输对象
      */
     @Override
+    @Transactional
     public void update(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);

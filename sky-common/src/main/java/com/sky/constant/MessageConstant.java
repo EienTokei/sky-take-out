@@ -26,11 +26,11 @@ public class MessageConstant {
 
     public static final String EMPLOYEE_ALREADY_EXISTS = "用户名已存在";
     public static final String STATUS_PARAM_ERROR = "状态参数错误";
-    public static final String EMPLOYEE_ID_EMPTY = "员工ID为空";
+    public static final String ID_EMPTY = "ID为空";
     public static final String CURRENT_USER_NOT_FOUND = "未获取到当前登录用户信息";
     public static final String CANNOT_DISABLE_SELF = "不能禁用当前登录账号";
     public static final String CANNOT_DISABLE_ADMIN = "不能禁用 admin 账号";
-    public static final String EMPLOYEE_NOT_FOUND = "员工不存在";
+    public static final String RESOURCE_NOT_FOUND = "资源不存在";
 
     public static final String CATEGORY_ALREADY_EXISTS = "分类已存在";
 }

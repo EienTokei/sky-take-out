@@ -29,7 +29,7 @@ public interface EmployeeService {
     PageResult<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 
     /**
-     *
+     * 更新员工状态
      * @param status 状态值
      * @param id 员工ID
      */
