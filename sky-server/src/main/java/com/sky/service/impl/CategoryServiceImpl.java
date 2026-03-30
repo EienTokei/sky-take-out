@@ -39,6 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param categoryDTO 分类信息数据传输对象
      */
     @Override
+    @Transactional
     public void add(CategoryDTO categoryDTO) {
         Category categoryByName = categoryMapper.getByName(categoryDTO.getName());
         if (categoryByName != null) {
@@ -115,7 +116,10 @@ public class CategoryServiceImpl implements CategoryService {
         category.setUpdateTime(LocalDateTime.now());
         category.setUpdateUser(BaseContext.getCurrentId());
 
-        categoryMapper.update(category);
+        int rows = categoryMapper.update(category);
+        if (rows == 0) {
+            throw new ResourceNotFoundException(MessageConstant.RESOURCE_NOT_FOUND);
+        }
     }
 
     /**
@@ -124,7 +128,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     @Transactional
-    public void deleteById(Integer id) {
+    public void deleteById(Long id) {
         int dishCount = dishMapper.countByCategoryId(id);
         if (dishCount > 0) {
             throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
@@ -134,5 +138,15 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);
         }
         categoryMapper.deleteById(id);
+    }
+
+    /**
+     * 根据类型查询分类
+     * @param type 类型
+     * @return 分类列表
+     */
+    @Override
+    public List<Category> queryByType(Integer type) {
+        return categoryMapper.queryByType(type);
     }
 }

@@ -5,6 +5,8 @@ import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import com.sky.result.PageResult;
 
+import java.util.List;
+
 public interface CategoryService {
     /**
      * 新增分类
@@ -36,5 +38,12 @@ public interface CategoryService {
      * 根据ID删除分类
      * @param id 分类ID
      */
-    void deleteById(Integer id);
+    void deleteById(Long id);
+
+    /**
+     * 根据类型查询分类
+     * @param type 类型
+     * @return  分类列表
+     */
+    List<Category> queryByType(Integer type);
 }

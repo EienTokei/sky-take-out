@@ -46,5 +46,12 @@ public interface CategoryMapper {
      * @param id 分类ID
      */
     @Delete("delete from category where id = #{id}")
-    void deleteById(Integer id);
+    void deleteById(Long id);
+
+    /**
+     * 根据类型查询分类
+     * @param type 类型
+     * @return 分类列表
+     */
+    List<Category> queryByType(Integer type);
 }

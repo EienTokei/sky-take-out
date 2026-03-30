@@ -11,5 +11,5 @@ public interface SetmealMapper {
      * @return 关联套餐数
      */
     @Select("select COUNT(*) from setmeal where category_id = #{categoryId}")
-    int countByCategoryId(Integer categoryId);
+    int countByCategoryId(Long categoryId);
 }

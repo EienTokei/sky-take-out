@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 分类管理
  */
@@ -99,9 +101,22 @@ public class CategoryController {
      */
     @DeleteMapping
     @ApiOperation("根据ID删除分类")
-    public Result<Void> deleteById(Integer id) {
+    public Result<Void> deleteById(Long id) {
         log.info("删除分类, ID: {}", id);
         categoryService.deleteById(id);
         return Result.success();
+    }
+
+    /**
+     * 根据类型查询分类
+     * @param type 类型
+     * @return  统一响应结果
+     */
+    @GetMapping("/list")
+    @ApiOperation("根据类型查询分类")
+    public Result<List<Category>> queryByType(Integer type) {
+        log.info("根据类型 {} 查询分类", type);
+        List<Category> categories = categoryService.queryByType(type);
+        return Result.success(categories);
     }
 }
