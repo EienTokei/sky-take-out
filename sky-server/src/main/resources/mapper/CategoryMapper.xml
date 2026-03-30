@@ -12,7 +12,7 @@
                 and type = #{type}
             </if>
         </where>
-        order by create_time desc
+        order by sort asc , create_time desc
     </select>
 
     <update id="update" parameterType="Category">
@@ -31,10 +31,11 @@
     <select id="queryByType" resultType="com.sky.entity.Category">
         select * from category
         <where>
+            status = 1
             <if test="type != null">
                 and type = #{type}
             </if>
         </where>
-        order by sort asc
+        order by sort asc, create_time desc
     </select>
 </mapper>
