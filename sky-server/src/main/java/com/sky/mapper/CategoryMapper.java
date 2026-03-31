@@ -1,7 +1,9 @@
 package com.sky.mapper;
 
+import com.sky.annotation.AutoFill;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -25,6 +27,7 @@ public interface CategoryMapper {
             "values " +
             "(#{type}, #{name}, #{sort}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
+    @AutoFill(OperationType.INSERT)
     void insert(Category category);
 
     /**
@@ -39,6 +42,7 @@ public interface CategoryMapper {
      * @param category 分类对象
      * @return 数据库受影响的行数
      */
+    @AutoFill(OperationType.UPDATE)
     int update(Category category);
 
     /**

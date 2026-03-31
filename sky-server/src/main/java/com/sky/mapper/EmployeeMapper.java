@@ -1,7 +1,9 @@
 package com.sky.mapper;
 
+import com.sky.annotation.AutoFill;
 import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
+import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -39,6 +41,7 @@ public interface EmployeeMapper {
     // 驼峰命名与下划线字段自动映射
     @Options(useGeneratedKeys = true, keyProperty = "id")
     // 告诉 MyBatis 使用数据库自动生成的主键（如 MySQL 的自增 ID）并将自动生成的主键值设置回传入的实体类对象的 id 属性上
+    @AutoFill(OperationType.INSERT)
     void insert(Employee employee);
     /*
       调用 employeeMapper.insert(employee) 时，传入一个 Employee 对象，此时 employee.getId() 为 null（或默认值）。
@@ -60,6 +63,7 @@ public interface EmployeeMapper {
      * @param employee 包含主键 id 和需要更新的非空字段的员工对象
      * @return 数据库受影响的行数，通常为 1（更新成功）或 0（未找到对应 id 的记录）
      */
+    @AutoFill(OperationType.UPDATE)
     int update(Employee employee);
 
     /**
