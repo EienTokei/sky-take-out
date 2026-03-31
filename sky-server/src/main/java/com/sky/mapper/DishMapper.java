@@ -33,4 +33,25 @@ public interface DishMapper {
      * @return 分页查询结果, 包含菜品视图对象
      */
     List<DishVO> pageQuery(DishPageQueryDTO dishPageQueryDTO);
+
+    /**
+     * 根据id查询菜品
+     * @param id 菜品id
+     * @return 菜品
+     */
+    @Select("select * from dish where id = #{id}")
+    Dish getById(Long id);
+
+    /**
+     * 根据id列表批量删除菜品
+     * @param ids id列表
+     */
+    void deleteByIds(List<Long> ids);
+
+    /**
+     * 根据id批量查询菜品
+     * @param ids 菜品id
+     * @return 菜品列表
+     */
+    List<Dish> getByIds(List<Long> ids);
 }
