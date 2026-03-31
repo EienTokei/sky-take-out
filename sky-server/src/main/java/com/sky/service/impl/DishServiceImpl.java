@@ -145,4 +145,19 @@ public class DishServiceImpl implements DishService {
         }
 
     }
+
+    /**
+     * 更新菜品状态
+     * @param status 状态
+     * @param id 菜品id
+     */
+    @Override
+    @Transactional
+    public void updateStatus(Integer status, Long id) {
+        Dish dish = Dish.builder()
+                .id(id)
+                .status(status)
+                .build();
+        dishMapper.update(dish);
+    }
 }
