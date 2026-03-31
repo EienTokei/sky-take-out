@@ -7,8 +7,15 @@ import com.aliyun.oss.OSSException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
 import java.io.ByteArrayInputStream;
 
+/**
+ * 纯 Java 工具类，负责执行真正的文件上传操作到阿里云 OSS，并返回可访问的文件 URL。
+ * 它不依赖 Spring 注解，通过构造方法传入配置参数，保持了良好的独立性和可测试性
+ */
+// @Component
+// 不标注 @Component, 保持类纯粹，可以在非 Spring 环境（如单元测试、命令行工具）中直接 new AliOssUtil(...) 使用
 @Data
 @AllArgsConstructor
 @Slf4j
@@ -22,9 +29,9 @@ public class AliOssUtil {
     /**
      * 文件上传
      *
-     * @param bytes
-     * @param objectName
-     * @return
+     * @param bytes 接收文件字节流
+     * @param objectName 目标文件名
+     * @return 可直接访问的 URL
      */
     public String upload(byte[] bytes, String objectName) {
 
@@ -61,7 +68,7 @@ public class AliOssUtil {
                 .append("/")
                 .append(objectName);
 
-        log.info("文件上传到:{}", stringBuilder.toString());
+        log.info("文件上传到:{}", stringBuilder);
 
         return stringBuilder.toString();
     }
