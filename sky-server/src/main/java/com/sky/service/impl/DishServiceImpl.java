@@ -103,4 +103,46 @@ public class DishServiceImpl implements DishService {
         dishMapper.deleteByIds(ids);
         dishFlavorMapper.deleteByDishIds(ids);
     }
+
+    /**
+     * 根据id查询菜品及其口味
+     * @param id 菜品id
+     * @return 菜品视图对象
+     */
+    @Override
+    public DishVO getWithFlavorById(Long id) {
+        Dish dish = dishMapper.getById(id);
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+
+        List<DishFlavor> flavors = dishFlavorMapper.getByDishId(id);
+        dishVO.setFlavors(flavors);
+        return dishVO;
+    }
+
+    /**
+     * 修改菜品及其口味
+     * @param dishDTO 菜品数据传输对象
+     */
+    @Override
+    @Transactional
+    public void updateWithFlavor(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+
+        // 删除原口味
+        dishFlavorMapper.deleteByDishId(dishDTO.getId());
+
+        // 添加新口味
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        Long dishId = dishDTO.getId();
+        if (flavors != null && !flavors.isEmpty()) {
+            flavors.forEach(dishFlavor -> dishFlavor.setDishId(dishId));
+
+            dishFlavorMapper.insertBatch(flavors);  // 即使需要遍历设置dishId
+            // 通过批量插入可减少数据库连接和 IO 次数，提升高并发下的吞吐量
+        }
+
+    }
 }

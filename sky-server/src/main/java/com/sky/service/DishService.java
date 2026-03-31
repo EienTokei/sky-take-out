@@ -26,4 +26,17 @@ public interface DishService {
      * @param ids 删除菜品id
      */
     void deleteBatch(List<Long> ids);
+
+    /**
+     * 根据id查询菜品及其口味
+     * @param id 菜品id
+     * @return 菜品视图对象
+     */
+    DishVO getWithFlavorById(Long id);
+
+    /**
+     * 修改菜品及其口味
+     * @param dishDTO 菜品数据传输对象
+     */
+    void updateWithFlavor(DishDTO dishDTO);
 }
