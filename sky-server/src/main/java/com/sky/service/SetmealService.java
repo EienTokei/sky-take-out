@@ -19,4 +19,11 @@ public interface SetmealService {
      * @return 分页查询结果
      */
     PageResult<SetmealVO> pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    /**
+     * 套餐起售、停售
+     * @param status 状态
+     * @param id 套餐id
+     */
+    void updateStatus(Integer status, Long id);
 }

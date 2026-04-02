@@ -36,7 +36,7 @@ public class SetmealController {
     /**
      * 分页查询
      * @param setmealPageQueryDTO 套餐分页查询数据传输对象
-     * @return 统一响应结构
+     * @return 统一响应结果
      */
     @GetMapping("/page")
     @ApiOperation("分页查询")
@@ -44,5 +44,19 @@ public class SetmealController {
         log.info("分页查询, {}", setmealPageQueryDTO);
         PageResult<SetmealVO> setmealVOPageResult = setmealService.pageQuery(setmealPageQueryDTO);
         return Result.success(setmealVOPageResult);
+    }
+
+    /**
+     * 套餐起售、停售
+     * @param status 状态
+     * @param id 套餐id
+     * @return 统一响应结果
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("套餐起售、停售")
+    public Result<Void> updateStatus(@PathVariable Integer status, Long id) {
+        log.info("套餐起售、停售, id: {}, 状态: {}", id, status);
+        setmealService.updateStatus(status, id);
+        return Result.success();
     }
 }
