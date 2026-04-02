@@ -26,4 +26,11 @@ public interface SetmealService {
      * @param id 套餐id
      */
     void updateStatus(Integer status, Long id);
+
+    /**
+     * 根据id查询套餐
+     * @param id 套餐id
+     * @return 套餐视图对象
+     */
+    SetmealVO getWithSetmealDishesById(Long id);
 }
