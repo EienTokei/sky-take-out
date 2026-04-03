@@ -33,4 +33,10 @@ public interface SetmealService {
      * @return 套餐视图对象
      */
     SetmealVO getWithSetmealDishesById(Long id);
+
+    /**
+     * 修改套餐及其包含的菜品
+     * @param setmealDTO 套餐数据传输对象
+     */
+    void updateWithSetmealDishes(SetmealDTO setmealDTO);
 }
