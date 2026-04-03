@@ -5,6 +5,8 @@ import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.result.PageResult;
 import com.sky.vo.SetmealVO;
 
+import java.util.List;
+
 public interface SetmealService {
     /**
      * 新增套餐
@@ -39,4 +41,10 @@ public interface SetmealService {
      * @param setmealDTO 套餐数据传输对象
      */
     void updateWithSetmealDishes(SetmealDTO setmealDTO);
+
+    /**
+     * 批量删除套餐
+     * @param ids id列表
+     */
+    void deleteBatch(List<Long> ids);
 }

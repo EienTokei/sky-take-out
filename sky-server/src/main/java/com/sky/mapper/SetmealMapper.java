@@ -55,4 +55,17 @@ public interface SetmealMapper {
      */
     @Select("select * from setmeal where id = #{id}")
     Setmeal getById(Long id);
+
+    /**
+     * 根据id批量查询套餐
+     * @param ids id列表
+     * @return 套餐列表
+     */
+    List<Setmeal> getByIds(List<Long> ids);
+
+    /**
+     * 根据id批量删除套餐
+     * @param ids id列表
+     */
+    void deleteByIds(List<Long> ids);
 }
