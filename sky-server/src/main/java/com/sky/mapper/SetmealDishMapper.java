@@ -42,4 +42,11 @@ public interface SetmealDishMapper {
      * @param setmealIds 套餐id列表
      */
     void deleteBySetmealIds(List<Long> setmealIds);
+
+    /**
+     * 添加套餐id下的停售菜品数
+     * @param setmealId 套餐id
+     * @return 停售菜品数
+     */
+    Integer countDisableDishesBySetmealId(Long setmealId);
 }

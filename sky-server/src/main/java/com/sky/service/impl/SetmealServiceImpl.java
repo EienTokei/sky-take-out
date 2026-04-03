@@ -74,6 +74,12 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Override
     public void updateStatus(Integer status, Long id) {
+        if (StatusConstant.ENABLE.equals(status)) {
+            Integer count = setmealDishMapper.countDisableDishesBySetmealId(id);
+            if (count != null && count > 0) {
+                throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ENABLE_FAILED);
+            }
+        }
         Setmeal setmeal = Setmeal.builder()
                 .id(id)
                 .status(status)
