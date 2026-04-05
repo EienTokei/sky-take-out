@@ -33,42 +33,68 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     /**
      * 注册自定义拦截器
-     *
-     * @param registry
+     * <p>
+     * 将 JwtTokenAdminInterceptor 拦截器添加到 Spring MVC 的拦截器链中。
+     * 拦截所有 /admin/** 的请求，但排除登录接口 /admin/employee/login，
+     * 因为登录时还没有 token，需要放行。
+     * @param registry 拦截器注册器
      */
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
         registry.addInterceptor(jwtTokenAdminInterceptor)
-                .addPathPatterns("/admin/**")
-                .excludePathPatterns("/admin/employee/login");
+                .addPathPatterns("/admin/**")   // 拦截所有 admin 下的请求
+                .excludePathPatterns("/admin/employee/login");  // 放行登录接口
     }
 
     /**
      * 通过knife4j生成接口文档
-     * @return
+     * @return Docket 对象，用于配置 Swagger 2 接口文档（管理端）
      */
     @Bean
-    public Docket docket() {
+    public Docket docketAdmin() {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("苍穹外卖项目接口文档")
                 .version("2.0")
                 .description("苍穹外卖项目接口文档")
                 .build();
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)
+                .groupName("admin") // 设置组名
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.sky.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.sky.controller.admin"))
                 .paths(PathSelectors.any())
                 .build();
-        return docket;
+    }
+    /**
+     * 通过knife4j生成接口文档
+     * @return Docket 对象，用于配置 Swagger 2 接口文档（用户端）
+     */
+    @Bean
+    public Docket docketUser() {
+        ApiInfo apiInfo = new ApiInfoBuilder()
+                .title("苍穹外卖项目接口文档")
+                .version("2.0")
+                .description("苍穹外卖项目接口文档")
+                .build();
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo)
+                .groupName("user")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.sky.controller.user"))
+                .paths(PathSelectors.any())
+                .build();
     }
 
     /**
      * 设置静态资源映射
-     * @param registry
+     * <p>
+     * 使 knife4j 生成的接口文档页面（doc.html）和相关的 webjars 资源可以被访问。
+     * @param registry 资源处理器注册器
      */
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 映射 /doc.html 到 classpath:/META-INF/resources/ 下的静态文件
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        // 映射 /webjars/** 到 classpath:/META-INF/resources/webjars/，供 Swagger UI 使用
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
