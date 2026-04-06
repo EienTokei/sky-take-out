@@ -22,26 +22,31 @@ import java.util.Map;
 
 /**
  * Http工具类
+ * 基于Apache HttpClient封装，提供GET、POST表单、POST JSON三种请求方式
+ * 所有方法均设置超时时间为5秒
  */
 public class HttpClientUtil {
 
-    static final  int TIMEOUT_MSEC = 5 * 1000;
+    // 超时时间常量：连接超时、请求超时、读取超时均使用此值，单位毫秒
+    static final int TIMEOUT_MSEC = 5 * 1000;
 
     /**
      * 发送GET方式请求
-     * @param url
-     * @param paramMap
-     * @return
+     * @param url      请求的URL地址（不含参数）
+     * @param paramMap 请求参数键值对，将自动拼接到URL后
+     * @return 响应体字符串（UTF-8编码），若请求失败或状态码非200则返回空字符串
      */
     public static String doGet(String url,Map<String,String> paramMap){
-        // 创建Httpclient对象
+        // 创建默认的HttpClient对象（每次调用新建一个，用完关闭）
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         String result = "";
         CloseableHttpResponse response = null;
 
         try{
+            // 使用URIBuilder方便地构建带参数的URI
             URIBuilder builder = new URIBuilder(url);
+            // 遍历参数Map，将所有参数添加到URIBuilder中
             if(paramMap != null){
                 for (String key : paramMap.keySet()) {
                     builder.addParameter(key,paramMap.get(key));
@@ -62,6 +67,7 @@ public class HttpClientUtil {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
+            // 关闭响应和HttpClient，释放资源
             try {
                 response.close();
                 httpClient.close();
@@ -74,11 +80,11 @@ public class HttpClientUtil {
     }
 
     /**
-     * 发送POST方式请求
-     * @param url
-     * @param paramMap
-     * @return
-     * @throws IOException
+     * 发送POST方式请求（application/x-www-form-urlencoded格式，即表单提交）
+     * @param url      请求的URL地址
+     * @param paramMap 请求参数键值对，会放在请求体中
+     * @return 响应体字符串（UTF-8编码）
+     * @throws IOException 网络异常或IO错误时抛出
      */
     public static String doPost(String url, Map<String, String> paramMap) throws IOException {
         // 创建Httpclient对象
@@ -92,7 +98,7 @@ public class HttpClientUtil {
 
             // 创建参数列表
             if (paramMap != null) {
-                List<NameValuePair> paramList = new ArrayList();
+                List<NameValuePair> paramList = new ArrayList<>();
                 for (Map.Entry<String, String> param : paramMap.entrySet()) {
                     paramList.add(new BasicNameValuePair(param.getKey(), param.getValue()));
                 }
@@ -121,11 +127,11 @@ public class HttpClientUtil {
     }
 
     /**
-     * 发送POST方式请求
-     * @param url
-     * @param paramMap
-     * @return
-     * @throws IOException
+     * 发送POST方式请求（application/json格式）
+     * @param url      请求的URL地址
+     * @param paramMap 请求参数键值对，会被转换为JSON对象发送
+     * @return 响应体字符串（UTF-8编码）
+     * @throws IOException 网络异常或IO错误时抛出
      */
     public static String doPost4Json(String url, Map<String, String> paramMap) throws IOException {
         // 创建Httpclient对象
@@ -169,11 +175,16 @@ public class HttpClientUtil {
 
         return resultString;
     }
+
+    /**
+     * 构建请求配置对象，统一设置连接超时、请求超时、读取超时
+     * @return RequestConfig 对象
+     */
     private static RequestConfig builderRequestConfig() {
         return RequestConfig.custom()
-                .setConnectTimeout(TIMEOUT_MSEC)
-                .setConnectionRequestTimeout(TIMEOUT_MSEC)
-                .setSocketTimeout(TIMEOUT_MSEC).build();
+                .setConnectTimeout(TIMEOUT_MSEC)    // 设置连接超时时间
+                .setConnectionRequestTimeout(TIMEOUT_MSEC)  // 设置从连接池获取连接的超时时间
+                .setSocketTimeout(TIMEOUT_MSEC).build();    // 设置读取数据超时时间
     }
 
 }
