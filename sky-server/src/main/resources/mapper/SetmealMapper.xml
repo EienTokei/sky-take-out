@@ -6,13 +6,13 @@
         select s.*, c.name as category_name from setmeal s left outer join category c on s.category_id = c.id
         <where>
             <if test="name != null and name != ''">
-                and name like concat('%', #{name}, '%')
+                and s.name like concat('%', #{name}, '%')
             </if>
             <if test="status != null">
-                and status = #{status}
+                and s.status = #{status}
             </if>
             <if test="categoryId != null">
-                and category_id = #{categoryId}
+                and s.category_id = #{categoryId}
             </if>
         </where>
         order by create_time desc
@@ -48,4 +48,23 @@
             #{id}
         </foreach>
     </delete>
+
+    <!-- 查询必须写 resultType, 因为 MyBatis 需要知道如何将数据库的列名映射到 Java 对象
+    参数类型绝大多数可以省略, 因为 MyBatis 可以通过 TypeHandler 自动推断出参数类型
+    增删改两个都可以不写, 因为这些操作返回的是受影响的行数（int），MyBatis 默认处理
+    注解方式都不用写, 因为方法签名已提供类型信息 -->
+    <select id="list" parameterType="com.sky.entity.Setmeal" resultType="com.sky.entity.Setmeal">
+        select * from setmeal
+        <where>
+            <if test="name != null">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
 </mapper>

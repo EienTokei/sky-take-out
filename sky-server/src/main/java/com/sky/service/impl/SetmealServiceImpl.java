@@ -144,5 +144,15 @@ public class SetmealServiceImpl implements SetmealService {
         setmealDishMapper.deleteBySetmealIds(ids);
     }
 
+    /**
+     * 动态查询套餐
+     * @param setmeal 套餐对象
+     * @return 套餐列表
+     */
+    @Override
+    public List<Setmeal> list(Setmeal setmeal) {
+        return setmealMapper.list(setmeal);
+    }
+
 
 }
