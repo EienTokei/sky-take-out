@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * 分类管理
  */
-@RestController
+@RestController("adminCategoryController")
 // 标记这个类是一个 RESTful 风格的控制器，所有方法返回的数据（如 JSON）会直接写入 HTTP 响应体
 // 而不是跳转页面。
 @RequestMapping("/admin/category")
