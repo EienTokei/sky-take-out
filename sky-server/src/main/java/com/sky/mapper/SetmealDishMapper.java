@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.sky.entity.SetmealDish;
+import com.sky.vo.DishItemVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -49,4 +50,11 @@ public interface SetmealDishMapper {
      * @return 停售菜品数
      */
     Integer countDisableDishesBySetmealId(Long setmealId);
+
+    /**
+     * 根据套餐id查询包含的菜品
+     * @param id 套餐id
+     * @return 包含菜品列表
+     */
+    List<DishItemVO> getDishItemsById(Long id);
 }

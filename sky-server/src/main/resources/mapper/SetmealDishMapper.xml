@@ -28,4 +28,10 @@
         select count(*) from setmeal_dish sd left join dish d on sd.dish_id = d.id
         where sd.setmeal_id = #{setmealId} and d.status = 0
     </select>
+    
+    <select id="getDishItemsById" resultType="com.sky.vo.DishItemVO">
+        select sd.name, sd.copies, d.description, d.image
+        from setmeal_dish sd left join dish d on sd.dish_id = d.id
+        where sd.setmeal_id = #{id}
+    </select>
 </mapper>
