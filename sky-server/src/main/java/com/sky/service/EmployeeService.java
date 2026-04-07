@@ -5,15 +5,17 @@ import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.result.PageResult;
+import com.sky.vo.EmployeeLoginVO;
 
 public interface EmployeeService {
 
     /**
      * 员工登录
+     *
      * @param employeeLoginDTO 员工登录信息, 包含用户名和密码
-     * @return 员工实体
+     * @return 员工登录视图对象
      */
-    Employee login(EmployeeLoginDTO employeeLoginDTO);
+    EmployeeLoginVO login(EmployeeLoginDTO employeeLoginDTO);
 
     /**
      * 新增员工

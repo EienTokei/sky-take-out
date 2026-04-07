@@ -2,14 +2,18 @@ package com.sky.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.dto.UserLoginDTO;
 import com.sky.entity.User;
 import com.sky.exception.LoginFailedException;
 import com.sky.mapper.UserMapper;
+import com.sky.properties.JwtProperties;
 import com.sky.properties.WeChatProperties;
 import com.sky.service.UserService;
 import com.sky.utils.HttpClientUtil;
+import com.sky.utils.JwtUtil;
+import com.sky.vo.UserLoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private WeChatProperties weChatProperties;
     @Autowired
+    private JwtProperties jwtProperties;
+    @Autowired
     private UserMapper userMapper;
 
     /**
@@ -34,7 +40,7 @@ public class UserServiceImpl implements UserService {
      * @return 用户登录视图对象
      */
     @Override
-    public User wxLogin(UserLoginDTO userLoginDTO) {
+    public UserLoginVO wxLogin(UserLoginDTO userLoginDTO) {
         String openid = getOpenid(userLoginDTO.getCode());
 
         if (openid == null) {
@@ -51,7 +57,15 @@ public class UserServiceImpl implements UserService {
             userMapper.insert(user);
         }
 
-        return user;
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaimsConstant.USER_ID, user.getId());
+        String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
+
+        return UserLoginVO.builder()
+                .id(user.getId())
+                .openid(user.getOpenid())
+                .token(token)
+                .build();
     }
 
     /**

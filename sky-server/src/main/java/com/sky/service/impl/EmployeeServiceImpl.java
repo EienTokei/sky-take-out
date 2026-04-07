@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
@@ -12,15 +13,20 @@ import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.*;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.properties.JwtProperties;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
+import com.sky.utils.JwtUtil;
+import com.sky.vo.EmployeeLoginVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -28,15 +34,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+    @Autowired
+    private JwtProperties jwtProperties;
 
     /**
      * 员工登录
-     *
      * @param employeeLoginDTO 登录请求数据传输对象，包含用户名和密码
-     * @return 验证通过的员工实体对象
+     * @return 员工登录视图对象
      */
     @Override
-    public Employee login(EmployeeLoginDTO employeeLoginDTO) {
+    public EmployeeLoginVO login(EmployeeLoginDTO employeeLoginDTO) {
         String username = employeeLoginDTO.getUsername();
         String password = employeeLoginDTO.getPassword();
 
@@ -62,8 +69,24 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
         }
 
+        // 登录成功后，构建 JWT 令牌的负载（claims），将员工ID放入其中
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaimsConstant.EMP_ID, employee.getId());
+
+        // 调用 JwtUtil 工具类生成 JWT 字符串
+        String token = JwtUtil.createJWT(
+                jwtProperties.getAdminSecretKey(),
+                jwtProperties.getAdminTtl(),
+                claims);
+
+        // 构建返回给前端的视图对象，包含员工ID、用户名、姓名和生成的令牌
         //3、返回实体对象
-        return employee;
+        return EmployeeLoginVO.builder()
+                .id(employee.getId())
+                .userName(employee.getUsername())
+                .name(employee.getName())
+                .token(token)
+                .build();
     }
 
     /**

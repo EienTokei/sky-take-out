@@ -1,25 +1,19 @@
 package com.sky.controller.admin;
 
-import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.BaseException;
-import com.sky.properties.JwtProperties;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.EmployeeService;
-import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.swagger.annotations.Api;
 
@@ -34,12 +28,9 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
-    @Autowired
-    private JwtProperties jwtProperties;
 
     /**
      * 登录
-     *
      * @param employeeLoginDTO 登录请求数据传输对象，包含用户名和密码
      * @return 统一响应结果，包含登录成功后的员工信息及 JWT 令牌
      */
@@ -48,25 +39,7 @@ public class EmployeeController {
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
 
-        Employee employee = employeeService.login(employeeLoginDTO);
-
-        // 登录成功后，构建 JWT 令牌的负载（claims），将员工ID放入其中
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(JwtClaimsConstant.EMP_ID, employee.getId());
-
-        // 调用 JwtUtil 工具类生成 JWT 字符串
-        String token = JwtUtil.createJWT(
-                jwtProperties.getAdminSecretKey(),
-                jwtProperties.getAdminTtl(),
-                claims);
-
-        // 构建返回给前端的视图对象，包含员工ID、用户名、姓名和生成的令牌
-        EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
-                .id(employee.getId())
-                .userName(employee.getUsername())
-                .name(employee.getName())
-                .token(token)
-                .build();
+        EmployeeLoginVO employeeLoginVO = employeeService.login(employeeLoginDTO);
 
         return Result.success(employeeLoginVO);
     }
