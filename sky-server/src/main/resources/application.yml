@@ -17,6 +17,12 @@ spring:
     port: ${spring.redis.port}
     password: ${spring.redis.password}
     database: ${spring.redis.database}
+  cache:
+    type: redis   # Spring Cache 会默认使用 Redis 作为缓存存储
+    redis:
+      time-to-live: 1800000     # 缓存默认过期时间 30 分钟，单位毫秒
+      cache-null-values: false  # 是否缓存 null 值，防止穿透
+
   # 日期格式化(Spring Boot 默认使用自动配置的 ObjectMapper，
   # 但如果你在项目中显式定义了一个 ObjectMapper 并将其注册到 SpringMVC 的消息转换器中，它就会取代默认的配置)
 #  jackson:

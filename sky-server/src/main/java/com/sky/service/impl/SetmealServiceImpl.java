@@ -17,8 +17,10 @@ import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +38,7 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Override
     @Transactional
+    @CacheEvict(value = "setmeal", key = "#setmealDTO.categoryId")  // 缓存名 setmeal，key 为分类id
     public void addWithSetmealDishes(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
@@ -74,6 +77,7 @@ public class SetmealServiceImpl implements SetmealService {
      * @param id 套餐id
      */
     @Override
+    @CacheEvict(value = "setmeal", allEntries = true)
     public void updateStatus(Integer status, Long id) {
         if (StatusConstant.ENABLE.equals(status)) {
             Integer count = setmealDishMapper.countDisableDishesBySetmealId(id);
@@ -110,6 +114,7 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Override
     @Transactional
+    @CacheEvict(value = "setmeal", key = "#setmealDTO.categoryId")
     public void updateWithSetmealDishes(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
@@ -134,6 +139,7 @@ public class SetmealServiceImpl implements SetmealService {
      */
     @Override
     @Transactional
+    @CacheEvict(value = "setmeal", allEntries = true)   // 清空整个 setmeal 缓存区
     public void deleteBatch(List<Long> ids) {
         List<Setmeal> setmeals = setmealMapper.getByIds(ids);
         for (Setmeal setmeal : setmeals) {
@@ -151,6 +157,8 @@ public class SetmealServiceImpl implements SetmealService {
      * @return 套餐列表
      */
     @Override
+    @Cacheable(value = "setmeal", key = "#setmeal.categoryId")  // key 为 setmeal::categoryId(值根据参数动态确定)
+    // 第一次调用时查数据库，结果存入 Redis，后续相同参数直接返回缓存
     public List<Setmeal> list(Setmeal setmeal) {
         return setmealMapper.list(setmeal);
     }
