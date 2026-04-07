@@ -35,7 +35,8 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
      * @throws Exception 可能抛出异常
      */
     @Override
-    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                             @NonNull Object handler) throws Exception {
         //判断当前拦截到的是Controller的方法还是其他资源
         if (!(handler instanceof HandlerMethod)) {
             //当前拦截到的不是动态方法，直接放行
@@ -63,7 +64,8 @@ public class JwtTokenUserInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex) throws Exception {
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                                @NonNull Object handler, Exception ex) throws Exception {
         BaseContext.removeCurrentId();  // 释放
     }
 }
