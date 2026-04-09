@@ -83,4 +83,17 @@ public class AddressBookController {
         addressBookService.deleteById(id);
         return Result.success();
     }
+
+    /**
+     * 根据id修改地址
+     * @param addressBook 地址
+     * @return 统一响应结果
+     */
+    @PutMapping
+    @ApiOperation("根据id修改地址")
+    public Result<Void> update(@RequestBody AddressBook addressBook) {
+        log.info("根据id修改地址");
+        addressBookService.update(addressBook);
+        return Result.success();
+    }
 }
