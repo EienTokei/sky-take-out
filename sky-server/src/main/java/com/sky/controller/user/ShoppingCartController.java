@@ -57,4 +57,17 @@ public class ShoppingCartController {
         shoppingCartService.clean();
         return Result.success();
     }
+
+    /**
+     * 删除购物车中一个商品
+     * @param shoppingCartDTO 购物车视图对象，包含要删除的商品信息
+     * @return 统一响应结果，操作成功返回成功响应
+     */
+    @PostMapping("/sub") // HTTP DELETE请求映射到/sub路径
+    @ApiOperation("删除购物车中一个商品") // API接口文档说明
+    public Result<Void> sub(@RequestBody ShoppingCartDTO shoppingCartDTO) { // 定义删除购物车商品的方法
+        log.info("删除购物车中一个商品: {}", shoppingCartDTO); // 记录日志，输出删除的商品信息
+        shoppingCartService.sub(shoppingCartDTO); // 调用服务层方法执行删除操作
+        return Result.success(); // 返回操作成功的结果
+    }
 }

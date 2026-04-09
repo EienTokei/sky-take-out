@@ -20,5 +20,42 @@
             </if>
         </where>
     </select>
+    
+    <update id="decNumByCondition">
+        update shopping_cart set number = number - 1
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="dishFlavor != null">
+                and dish_flavor = #{dishFlavor}
+            </if>
+            and number > 0
+        </where>
+    </update>
+
+    <update id="incNumByCondition">
+        update shopping_cart set number = number + 1
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="dishFlavor != null">
+                and dish_flavor = #{dishFlavor}
+            </if>
+        </where>
+    </update>
 
 </mapper>
