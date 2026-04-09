@@ -84,4 +84,14 @@ public class AddressBookServiceImpl implements AddressBookService {
     public void update(AddressBook addressBook) {
         addressBookMapper.update(addressBook);
     }
+
+    /**
+     * 查询默认地址
+     * @return 默认地址
+     */
+    @Override
+    public AddressBook getDefault() {
+        Long userId = BaseContext.getCurrentId();
+        return addressBookMapper.getDefault(userId);
+    }
 }

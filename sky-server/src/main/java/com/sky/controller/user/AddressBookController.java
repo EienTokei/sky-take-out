@@ -96,4 +96,16 @@ public class AddressBookController {
         addressBookService.update(addressBook);
         return Result.success();
     }
+
+    /**
+     * 查询默认地址
+     * @return 统一响应结果
+     */
+    @GetMapping("/default")
+    @ApiOperation("查询默认地址")
+    public Result<AddressBook> getDefault() {
+        log.info("查询默认地址");
+        AddressBook addressBook = addressBookService.getDefault();
+        return Result.success(addressBook);
+    }
 }

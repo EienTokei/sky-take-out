@@ -63,4 +63,12 @@ public interface AddressBookMapper {
      * @param addressBook 地址
      */
     void update(AddressBook addressBook);
+
+    /**
+     * 查询默认地址
+     * @param userId 用户id
+     * @return 默认地址
+     */
+    @Select("select * from address_book where is_default = 1 and user_id = #{userId}")
+    AddressBook getDefault(Long userId);
 }

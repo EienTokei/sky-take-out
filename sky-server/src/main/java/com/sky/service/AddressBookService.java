@@ -42,4 +42,10 @@ public interface AddressBookService {
      * @param addressBook 地址
      */
     void update(AddressBook addressBook);
+
+    /**
+     * 查询默认地址
+     * @return 默认地址
+     */
+    AddressBook getDefault();
 }
