@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.entity.AddressBook;
+import com.sky.exception.AddressBookBusinessException;
 import com.sky.mapper.AddressBookMapper;
 import com.sky.service.AddressBookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,21 @@ public class AddressBookServiceImpl implements AddressBookService {
     public List<AddressBook> list() {
         Long userId = BaseContext.getCurrentId();
         return addressBookMapper.list(userId);
+    }
+
+    /**
+     * 设置默认地址
+     * @param addressBook 地址
+     */
+    @Override
+    @Transactional
+    public void setDefault(AddressBook addressBook) {
+        Long userId = BaseContext.getCurrentId();
+        addressBook.setUserId(userId);
+        addressBookMapper.resetDefault(userId);
+        int affected = addressBookMapper.setDefault(addressBook);
+        if (affected == 0) {
+            throw new AddressBookBusinessException("地址不存在或不属于当前用户");
+        }
     }
 }

@@ -37,4 +37,12 @@ public interface AddressBookMapper {
      */
     @Select("select * from address_book where user_id = #{userId}")
     List<AddressBook> list(Long userId);
+
+    /**
+     * 设置默认地址
+     * @param addressBook 地址
+     * @return 影响行数
+     */
+    @Update("update address_book set is_default = 1 where id = #{id} and user_id = #{userId}")
+    int setDefault(AddressBook addressBook);
 }

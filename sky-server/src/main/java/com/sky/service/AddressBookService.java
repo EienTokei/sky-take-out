@@ -17,4 +17,10 @@ public interface AddressBookService {
      * @return 地址列表
      */
     List<AddressBook> list();
+
+    /**
+     * 设置默认地址
+     * @param addressBook 地址
+     */
+    void setDefault(AddressBook addressBook);
 }

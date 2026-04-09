@@ -44,4 +44,17 @@ public class AddressBookController {
         List<AddressBook> addressBooks = addressBookService.list();
         return Result.success(addressBooks);
     }
+
+    /**
+     * 设置默认地址
+     * @param addressBook 地址
+     * @return 统一响应结果
+     */
+    @PutMapping("/default")
+    @ApiOperation("设置默认地址")
+    public Result<Void> setDefault(@RequestBody AddressBook addressBook) {
+        log.info("设置默认地址: {}", addressBook);
+        addressBookService.setDefault(addressBook);
+        return Result.success();
+    }
 }
