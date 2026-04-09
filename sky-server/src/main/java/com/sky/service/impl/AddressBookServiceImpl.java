@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class AddressBookServiceImpl implements AddressBookService {
 
@@ -26,5 +28,15 @@ public class AddressBookServiceImpl implements AddressBookService {
         addressBook.setIsDefault(StatusConstant.DISABLE);
 
         addressBookMapper.insert(addressBook);
+    }
+
+    /**
+     * 查询当前登录用户的所有地址信息
+     * @return 地址列表
+     */
+    @Override
+    public List<AddressBook> list() {
+        Long userId = BaseContext.getCurrentId();
+        return addressBookMapper.list(userId);
     }
 }

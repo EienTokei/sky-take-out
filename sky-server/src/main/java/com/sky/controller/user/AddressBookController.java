@@ -33,10 +33,15 @@ public class AddressBookController {
         return Result.success();
     }
 
+    /**
+     * 查询当前登录用户的所有地址信息
+     * @return 统一响应结果
+     */
     @GetMapping("/list")
     @ApiOperation("查询当前登录用户的所有地址信息")
     public Result<List<AddressBook>> list() {
-        // TODO
-        return Result.success();
+        log.info("查询当前登录用户的所有地址信息");
+        List<AddressBook> addressBooks = addressBookService.list();
+        return Result.success(addressBooks);
     }
 }
