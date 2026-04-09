@@ -23,4 +23,11 @@ public interface AddressBookService {
      * @param addressBook 地址
      */
     void setDefault(AddressBook addressBook);
+
+    /**
+     * 根据id查询地址
+     * @param id 地址id
+     * @return 地址信息
+     */
+    AddressBook getById(Long id);
 }

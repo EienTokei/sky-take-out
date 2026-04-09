@@ -57,4 +57,17 @@ public class AddressBookController {
         addressBookService.setDefault(addressBook);
         return Result.success();
     }
+
+    /**
+     * 根据id查询地址
+     * @param id 地址id
+     * @return 统一响应结果
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询地址")
+    public Result<AddressBook> getById(@PathVariable Long id) {
+        log.info("根据id查询地址: {}", id);
+        AddressBook addressBook = addressBookService.getById(id);
+        return Result.success(addressBook);
+    }
 }

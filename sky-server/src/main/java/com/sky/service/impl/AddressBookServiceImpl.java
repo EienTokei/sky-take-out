@@ -56,4 +56,14 @@ public class AddressBookServiceImpl implements AddressBookService {
             throw new AddressBookBusinessException("地址不存在或不属于当前用户");
         }
     }
+
+    /**
+     * 根据id查询地址
+     * @param id 地址id
+     * @return 地址信息
+     */
+    @Override
+    public AddressBook getById(Long id) {
+        return addressBookMapper.getById(id);
+    }
 }

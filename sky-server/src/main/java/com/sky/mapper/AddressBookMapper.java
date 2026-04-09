@@ -45,4 +45,12 @@ public interface AddressBookMapper {
      */
     @Update("update address_book set is_default = 1 where id = #{id} and user_id = #{userId}")
     int setDefault(AddressBook addressBook);
+
+    /**
+     * 根据id查询地址
+     * @param id 地址id
+     * @return 地址信息
+     */
+    @Select("select * from address_book where id = #{id}")
+    AddressBook getById(Long id);
 }
