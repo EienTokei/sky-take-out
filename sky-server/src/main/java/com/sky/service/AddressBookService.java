@@ -30,4 +30,10 @@ public interface AddressBookService {
      * @return 地址信息
      */
     AddressBook getById(Long id);
+
+    /**
+     * 根据id删除地址
+     * @param id 地址id
+     */
+    void deleteById(Long id);
 }
