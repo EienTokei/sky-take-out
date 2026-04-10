@@ -16,6 +16,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
+
 @Configuration
 @Slf4j
 public class RedisConfiguration {
@@ -72,7 +74,8 @@ public class RedisConfiguration {
                 .serializeKeysWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair
-                        .fromSerializer(serializer));
+                        .fromSerializer(serializer))
+                .entryTtl(Duration.ofMinutes(30));
 
         // RedisCacheManager只会操作普通的 String-Value 结构，不会使用 Hash, 不需要设置
 
